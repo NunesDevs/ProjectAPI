@@ -5,7 +5,6 @@ import com.NunesDevs.PersonAPI.entity.Person;
 import com.NunesDevs.PersonAPI.repositoy.IPersonREPO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @Service
 public class PersonService {
