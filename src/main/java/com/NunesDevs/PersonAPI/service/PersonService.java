@@ -14,9 +14,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@org.springframework.transaction.annotation.Transactional
 public class PersonService {
 
-    private IPersonREPO personREPO;
+    private final IPersonREPO personREPO;
 
     private final IPersonMapper personMapper = IPersonMapper.INSTANCE;
 
@@ -28,7 +29,10 @@ public class PersonService {
     public MessageResponseDTO createPerson(PersonDTO personDTO) {
 
         Person personToSave = personMapper.toModel(personDTO);
-        Person savedPerson = personREPO.save(personToSave);
+        personToSave.setId(null);
+        personToSave.setCpf(personToSave.getCpf().replaceAll("[^0-9]", ""));
+        clearChildIds(personToSave);
+        Person savedPerson = personREPO.saveAndFlush(personToSave);
 
         return createdMessageResponse(savedPerson.getId(), "Created person with ID ");
 
@@ -61,10 +65,18 @@ public class PersonService {
         verifyIfExists(id);
 
         Person personToUpdate = personMapper.toModel(personDTO);
-        Person updatePerson = personREPO.save(personToUpdate);
+        personToUpdate.setId(id);
+        personToUpdate.setCpf(personToUpdate.getCpf().replaceAll("[^0-9]", ""));
+        clearChildIds(personToUpdate);
+        Person updatePerson = personREPO.saveAndFlush(personToUpdate);
 
         return createdMessageResponse(updatePerson.getId(), "Update person with ID ");
 
+    }
+
+    private void clearChildIds(Person person) {
+        person.getPhones().forEach(phone -> phone.setId(null));
+        person.getAddress().forEach(address -> address.setId(null));
     }
 
     private Person verifyIfExists(Long id) throws PersonNotFoundException {

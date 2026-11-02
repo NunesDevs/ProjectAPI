@@ -1,0 +1,51 @@
+# Memória do projeto
+
+Revisão: 2026-11-01. Ler este arquivo e `docs/ai-context/QUALITY_REVIEW_2026-11-01.md` antes de retomar alterações.
+
+## Objetivo e estado
+
+API REST de estudo com Spring Boot, JPA, validação aninhada e H2 em memória.
+
+Mudanças funcionais desta revisão:
+- CRUD em `/api/v1/people` com respostas 400, 404 e 409 para erros esperados.
+- Atualização usa a identidade da URL; IDs enviados pelo cliente não escolhem outro cadastro.
+- Telefones e endereços usam DTOs validados, com IDs de filhos atribuídos pelo servidor.
+- Datas em ISO `yyyy-MM-dd`, preservadas no retorno; CPF normalizado para evitar duplicação por pontuação.
+- Spring Boot 4.1.2, Java 17, Jakarta, MapStruct 1.6.3 e Maven Wrapper com hashes fixados.
+
+## Decisões
+
+- Preservar o propósito didático e o histórico anterior do Git.
+- Manter esta revisão na branch `codex/quality-refresh` até integração coordenada.
+- Preservar arquivos locais e avisos de terceiros; não versionar resultados de build, credenciais ou dados reais.
+- Artefatos de console são distribuíveis locais. Um build ou pacote não comprova publicação em produção.
+- Spring Boot 4.1.2 requer Java 17+ e Maven 3.6.3+, conferidos na documentação oficial: https://docs.spring.io/spring-boot/system-requirements.html . A migração usa Jakarta e altera datas do contrato para ISO; exige teste dos clientes antigos.
+
+## Validação reproduzível
+
+JDK 17+; o Maven Wrapper baixa Maven 3.9.11 e dependências oficiais na primeira execução.
+
+```powershell
+./mvnw.cmd -B verify
+java -jar target/PersonAPI-0.0.1-SNAPSHOT.jar
+```
+
+Linux/macOS: `./mvnw -B verify`. A API escuta `http://127.0.0.1:8080` por padrão. `PORT` muda a porta; `SERVER_ADDRESS` pode mudar o endereço. `GET /actuator/health` informa a saúde do processo.
+
+O contrato de data anterior `dd-MM-yyyy` foi substituído por ISO. Exemplo de criação:
+
+```json
+{"firstName":"Pessoa","lastName":"Teste","cpf":"52998224725","birthDate":"2000-01-01","phones":[{"type":"MOBILE","number":"11999990000"}],"address":[{"type":"FIRST","cep":"01001000","street":"Rua Teste","district":"Centro","city":"São Paulo","state":"SP","country":"Brasil"}]}
+```
+
+Cinco testes de integração verificam CRUD, identidade da URL, datas, validação aninhada, duplicidade e recursos ausentes.
+
+## Limitações para continuidade
+
+O banco padrão é volátil (`create-drop` em H2); reiniciar descarta os registros. A API não implementa autenticação ou autorização e deve ser usada localmente com dados fictícios. Não a exponha com dados pessoais reais. Persistência e controle de acesso precisam de um projeto de implantação próprio antes de qualquer uso operacional.
+
+Os documentos automáticos de maio em `docs/ai-context` são um registro histórico, incluindo falsos positivos por palavras como “secret”. Esta memória e a revisão de qualidade descrevem o estado posterior às correções.
+
+## Evidência da revisão
+
+Maven verify com Spring Boot 4.1.2 e JDK 17 aprovado; cinco testes de integração, zero falhas/erros. Inclui PUT pela identidade da URL, datas ISO, validação aninhada, CPF duplicado com pontuação e 404. JAR com avisos de licença empacotado.

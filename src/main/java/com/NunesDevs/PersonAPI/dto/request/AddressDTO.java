@@ -6,11 +6,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 
 @Data
 @Builder
@@ -21,30 +21,30 @@ public class AddressDTO {
 
     private Long id;
 
-    @Enumerated(EnumType.STRING)
+    @jakarta.validation.constraints.NotNull
     private AddressType type;
 
-    @NotEmpty
-    @Size(min = 8, max = 10)
+    @jakarta.validation.constraints.NotBlank
+    @jakarta.validation.constraints.Pattern(regexp = "[0-9]{5}-?[0-9]{3}")
     private String cep;
 
-    @NotEmpty
+    @jakarta.validation.constraints.NotBlank
     @Size(min = 2, max = 100)
     private String street;
 
-    @NotEmpty
+    @jakarta.validation.constraints.NotBlank
     @Size(min = 2, max = 100)
     private String district;
 
-    @NotEmpty
+    @jakarta.validation.constraints.NotBlank
     @Size(min = 2, max = 100)
     private String city;
 
-    @NotEmpty
+    @jakarta.validation.constraints.NotBlank
     @Size(min = 2, max = 100)
     private String state;
 
-    @NotEmpty
+    @jakarta.validation.constraints.NotBlank
     @Size(min = 2, max = 100)
     private String country;
 }

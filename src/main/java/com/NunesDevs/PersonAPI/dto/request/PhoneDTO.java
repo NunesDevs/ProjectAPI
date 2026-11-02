@@ -5,9 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import javax.validation.constraints.NotEmpty;
-import javax.persistence.*;
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 
 @Data
 @Builder
@@ -18,11 +18,11 @@ public class PhoneDTO {
 
     private Long id;
 
-    @Enumerated(EnumType.STRING)
+    @jakarta.validation.constraints.NotNull
     private PhoneType type;
 
-    @NotEmpty
-    @Size(min = 13, max=14)
+    @jakarta.validation.constraints.NotBlank
+    @jakarta.validation.constraints.Pattern(regexp = "[+]?[0-9]{10,15}")
     private String number;
 
 }
